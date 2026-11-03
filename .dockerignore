@@ -1,0 +1,53 @@
+# 宿主机依赖、构建产物与缓存
+**/node_modules
+**/dist
+**/dist-ssr
+**/.vite
+**/.cache
+**/.pnpm-store
+**/coverage
+**/.nyc_output
+
+# 本地环境配置；Dockerfile 使用模板生成构建配置
+**/.env
+**/.env.*
+!.env.example
+**/*.local
+
+# Git、编辑器和 AI 本地数据不进入构建上下文
+.git
+.github
+.gitignore
+.vscode
+.idea
+.claude
+.codex
+.agents
+.codex-tmp
+
+# 日志与临时文件
+**/logs
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+**/lerna-debug.log*
+**/.tmp
+**/tmp
+**/*.tmp
+**/*.bak
+**/*.orig
+**/*.rej
+**/.DS_Store
+**/Thumbs.db
+**/Desktop.ini
+**/*.sw?
+
+# 构建无需复制的仓库说明与容器配置
+/README*.md
+/docs
+/screenshots
+/Dockerfile*
+/docker-compose*
+/.dockerignore
