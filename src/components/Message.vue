@@ -4,6 +4,10 @@
     <!-- Logo -->
     <div class="logo">
       <img class="logo-img" :src="siteLogo" alt="nest" width="120" height="120" />
+      <div :class="{ name: true, 'text-hidden': true, long: siteUrl[0].length >= 6 }">
+        <span class="bg">{{ siteUrl[0] }}</span>
+        <span class="sm">.{{ siteUrl[1] }}</span>
+      </div>
     </div>
     <!-- 简介 -->
     <div class="description cards" @click="changeBox">
@@ -34,6 +38,18 @@ const store = mainStore();
 
 // 主页站点logo
 const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/brand/nest.svg";
+
+// 站点链接
+const siteUrl = computed(() => {
+  const url = import.meta.env.VITE_SITE_URL;
+  if (!url) return "alvis.org.cn".split(".");
+  // 判断协议前缀
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    const urlFormat = url.replace(/^(https?:\/\/)/, "");
+    return urlFormat.split(".");
+  }
+  return url.split(".");
+});
 
 // 简介区域文字
 const descriptionText = reactive({
