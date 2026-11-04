@@ -63,7 +63,7 @@ const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/brand/nest.svg"
 
 // 更新日志
 const upData = reactive({
-  new: [],
+  new: ["音乐播放器增加歌单"],
   fix: ["修复天气API", "修复双色球助手链接跳转地址错误问题"],
 });
 
