@@ -4,6 +4,10 @@
 
 仓库：[chenjieya/nest-home](https://github.com/chenjieya/nest-home)。
 
+| 版本 | 修改人 | 修改内容 | 日期 |
+| :-- | :-- | :-- | :-- |
+| 1.0 | jie.chen | 补充独立天气服务、运行时配置及双镜像部署 | 2026-11-04 |
+
 ## 1. 项目结构
 
 ```text
@@ -18,15 +22,16 @@ src/
 ├── utils/           日期、防抖与鼠标交互工具
 └── style/           公共样式
 public/              壁纸、字体与应用图标
+services/weather/    独立 Node 天气服务、Dockerfile 与接口测试
 ```
 
-技术栈为 Vue 3、Vite、Pinia、Element Plus 与 SCSS。当前没有业务后端、数据库或统一登录；项目访问通过外部链接跳转。
+前端使用 Vue 3、Vite、Pinia、Element Plus 与 SCSS；天气由独立 Node 22 服务处理，统一封装高德定位、天气及原备用接口。没有数据库或统一登录，项目访问通过外部链接跳转。
 
 ---
 
 ## 2. 本地开发
 
-仓库提供 `pnpm-lock.yaml`，使用兼容该锁文件的 pnpm。当前尚未在 `package.json` 固定 Node 和 pnpm 版本。
+使用 Node 22，pnpm 版本按 `package.json` 的 `packageManager` 声明安装。
 
 在项目根目录执行：
 
@@ -42,6 +47,8 @@ pnpm dev
 
 默认开发端口为 `3000`。首次运行前按实际情况编辑 `.env` 和链接 JSON；当前页面文案、域名及项目列表仍含模板配置，需要逐项替换。
 
+天气服务不需要安装第三方依赖。另开终端，将 `services/weather/.env.example` 复制为同目录 `.env`，填写 `AMAP_KEY`，把 `DATA_DIR` 改为 `./data`、`TRUST_PROXY` 改为 `false`，再执行 `pnpm --dir services/weather start`。本机 IP 无法定位，调试时在前端 `.env` 配置 `VITE_WEATHER_API="/api/weather?city=110101"`，然后重启 Vite。真实 Key 只填写在天气服务 `.env`，不要使用 `VITE_` 前缀。
+
 ---
 
 ## 3. 内容配置
@@ -53,6 +60,8 @@ pnpm dev
 | 社交入口                                 | `src/assets/socialLinks.json`              |
 | 项目图标映射                             | `src/components/Links.vue` 中的 `siteIcon` |
 | 壁纸与字体                               | `public/images/`、`public/font/`           |
+| 天气接口公开地址                         | 前端 `.env` 的 `VITE_WEATHER_API`，默认 `/api/weather` |
+| 高德 Key、备用地址、缓存和调用上限       | 服务器部署目录 `.env.weather`；模板 `services/weather/.env.example` |
 
 项目入口格式示例：
 
@@ -81,12 +90,11 @@ pnpm preview
 
 构建产物位于 `dist/`，可由静态文件服务托管。当前资源引用主要按域名根路径组织，子路径部署需额外核对 Vite base、图片路径和 PWA 配置。
 
-仓库保留两种构建方式：
+`docker-compose.yml` 启动两个容器：`nest-home` 在 `127.0.0.1:8000` 提供页面，并将天气 API 转发到 Docker 内网的 `nest-weather:3001`。宿主机 Nginx 继续把 `nest.alvis.org.cn` 转发到 8000，并覆盖 `X-Real-IP` 为真实访客 IP。
 
-- `Dockerfile` 与 `docker-compose.yml`：构建后通过 `http-server` 提供服务，端口为 `12445`。
-- `.github/workflows/build.yml`：在 `dev/master` 分支推送时构建并上传静态产物，未配置自动发布到服务器。
+推送 `main` 后，GitHub Actions 运行天气测试，分别构建 `ghcr.io/chenjieya/nest-home` 和 `ghcr.io/chenjieya/nest-weather`，再 SSH 部署。首次需要配置 SSH Secrets，并在服务器部署目录手动创建 `.env.weather`；天气 Key 不进入 GitHub、前端产物或镜像。
 
-Docker 和 CI 目前使用 npm，与本地 pnpm 安装方式尚未统一。
+天气服务也可以独立使用 `services/weather/docker-compose.yml` 部署到本机 8001，供其他站点反代。完整配置、验证与回滚步骤见 [天气服务部署说明](docs/7-发版与回滚/2026-11-04-天气服务部署说明.md)，接口契约见 [天气服务接口](docs/3-接口对接/后端接口文档/2026-11-04-天气服务接口.md)。
 
 ---
 
@@ -96,6 +104,7 @@ Docker 和 CI 目前使用 npm，与本地 pnpm 安装方式尚未统一。
 
 ```powershell
 pnpm exec eslint src --ext .js,.vue
+pnpm --dir services/weather test
 ```
 
 本项目基于 [imsyy/home](https://github.com/imsyy/home) 改造，原始版权声明与 MIT 许可证保留于 [LICENSE](LICENSE)。

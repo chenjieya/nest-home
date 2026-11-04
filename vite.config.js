@@ -74,6 +74,16 @@ export default ({ mode }) =>
     server: {
       port: "3000",
       open: true,
+      proxy: {
+        "/api/weather": {
+          target: "http://127.0.0.1:3001",
+          configure: (proxy) => {
+            proxy.on("proxyReq", (proxyReq, req) => {
+              proxyReq.setHeader("X-Real-IP", req.socket.remoteAddress || "127.0.0.1");
+            });
+          },
+        },
+      },
     },
     resolve: {
       alias: [

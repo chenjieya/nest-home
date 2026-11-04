@@ -53,23 +53,21 @@ export const getHitokoto = async () => {
  * 天气
  */
 
-// 获取高德地理位置信息
-export const getAdcode = async (key) => {
-  const res = await fetch(`https://restapi.amap.com/v3/ip?key=${key}`);
-  return await res.json();
-};
-
-// 获取高德地理天气信息
-export const getWeather = async (key, city) => {
-  const res = await fetch(
-    `https://restapi.amap.com/v3/weather/weatherInfo?key=${key}&city=${city}`,
-  );
-  return await res.json();
-};
-
-// 获取教书先生天气 API
-// https://api.oioweb.cn/doc/weather/GetWeather
-export const getOtherWeather = async () => {
-  const res = await fetch("https://api.oioweb.cn/api/weather/GetWeather");
-  return await res.json();
+// 供应商选择、Key 和定位均由独立天气服务处理，浏览器只消费统一结构。
+export const getWeather = async (signal) => {
+  const res = await fetch(import.meta.env.VITE_WEATHER_API || "/api/weather", { signal });
+  if (!res.ok) throw new Error("天气服务暂时不可用");
+  const result = await res.json();
+  if (
+    typeof result?.data?.city !== "string" ||
+    !result.data.city ||
+    typeof result.data.weather !== "string" ||
+    !result.data.weather ||
+    !Number.isFinite(result.data.temperature) ||
+    typeof result.data.winddirection !== "string" ||
+    typeof result.data.windpower !== "string"
+  ) {
+    throw new Error("天气服务返回格式异常");
+  }
+  return result;
 };

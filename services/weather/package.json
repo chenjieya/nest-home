@@ -1,0 +1,12 @@
+{
+  "name": "nest-weather",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "author": "jie.chen",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/index.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}

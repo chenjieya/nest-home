@@ -7,6 +7,10 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
+    command: ["http-server", "dist", "-p", "12445", "-P", "http://weather:3001"]
+    depends_on:
+      weather:
+        condition: service_healthy
     ports:
       - "127.0.0.1:8000:12445"
     logging:
@@ -14,3 +18,28 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  weather:
+    image: ${WEATHER_IMAGE:-ghcr.io/chenjieya/nest-weather:latest}
+    build: ./services/weather
+    restart: unless-stopped
+    # 此文件仅在服务器创建；CI 不上传、不覆盖，也不把它构建进镜像。
+    env_file: .env.weather
+    environment:
+      PORT: "3001"
+      DATA_DIR: /data
+      TRUST_PROXY: "true"
+    expose: ["3001"]
+    volumes:
+      - weather-data:/data
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  weather-data:

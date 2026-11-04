@@ -1,0 +1,26 @@
+# 可复制此目录独立部署；与根目录集成部署二选一，不要共享配额数据卷运行多个实例。
+name: nest-weather
+services:
+  weather:
+    image: ${WEATHER_IMAGE:-ghcr.io/chenjieya/nest-weather:latest}
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      PORT: "3001"
+      DATA_DIR: /data
+      TRUST_PROXY: "true"
+    ports:
+      - "127.0.0.1:8001:3001"
+    volumes:
+      - weather-data:/data
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+volumes:
+  weather-data:

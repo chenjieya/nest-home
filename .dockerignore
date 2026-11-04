@@ -47,6 +47,7 @@
 # 构建无需复制的仓库说明与容器配置
 /README*.md
 /docs
+/services/weather
 /screenshots
 /Dockerfile*
 /docker-compose*
