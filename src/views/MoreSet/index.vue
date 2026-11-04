@@ -64,7 +64,7 @@ const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/brand/nest.svg"
 // 更新日志
 const upData = reactive({
   new: ["nest 1.0.0 · 汇聚之所"],
-  fix: [],
+  fix: ["修复双色球助手链接跳转地址错误问题"],
 });
 
 // 跳转源代码仓库
