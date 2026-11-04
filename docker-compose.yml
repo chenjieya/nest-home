@@ -1,9 +1,16 @@
-version: '3'
+name: nest
 
 services:
   app:
+    image: ${IMAGE:-ghcr.io/chenjieya/nest-home:latest}
     build:
       context: .
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
-      - "12445:12445"
+      - "127.0.0.1:8000:12445"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

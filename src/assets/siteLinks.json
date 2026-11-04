@@ -5,6 +5,11 @@
     "link": "https://alvis.org.cn/"
   },
   {
+    "icon": "Fire",
+    "name": "双色球助手",
+    "link": "https://nest.alvis.org.cn/"
+  },
+  {
     "icon": "LaptopCode",
     "name": "站点监测",
     "link": "https://status.alvis.org.cn/"
