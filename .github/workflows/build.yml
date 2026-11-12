@@ -69,7 +69,7 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.image }}
           cache-to: type=gha,mode=max,scope=${{ matrix.image }}
 
-  # 2. SSH 密码登录，上传 Compose 并更新容器。
+  # 2. SSH 密钥登录，上传 Compose 并更新容器。
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -84,10 +84,10 @@ jobs:
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_PASS" ]; then
-            echo "::warning::未配置 SSH_HOST / SSH_USER / SSH_PASS，跳过部署（镜像已推送）"
+          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_PRIVATE_KEY" ]; then
+            echo "::warning::未配置 SSH_HOST / SSH_USER / SSH_PRIVATE_KEY，跳过部署（镜像已推送）"
             echo "skip=true" >> "$GITHUB_OUTPUT"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -99,7 +99,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASS }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
           source: docker-compose.yml,services/weather/.env.example
           target: ${{ env.DEPLOY_DIR }}
@@ -116,7 +116,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASS }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
           command_timeout: 15m
           envs: IMAGE,WEATHER_IMAGE,DEPLOY_DIR,GHCR_USER,GHCR_TOKEN
