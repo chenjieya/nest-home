@@ -10,6 +10,11 @@
     "link": "https://ticket.alvis.org.cn/"
   },
   {
+    "icon": "Database",
+    "name": "时序数据检测",
+    "link": "https://rz.alvis.org.cn/"
+  },
+  {
     "icon": "LaptopCode",
     "name": "站点监测",
     "link": "https://status.alvis.org.cn/"
