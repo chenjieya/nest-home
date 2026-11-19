@@ -10,6 +10,11 @@
     "link": "https://ticket.alvis.org.cn/"
   },
   {
+    "icon": "KeyboardRegular",
+    "name": "软件热键",
+    "link": "https://keyboard.alvis.org.cn/"
+  },
+  {
     "icon": "Database",
     "name": "时序数据检测",
     "link": "https://rz.alvis.org.cn/"

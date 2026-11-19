@@ -67,6 +67,7 @@ import {
   Compass,
   Book,
   Fire,
+  KeyboardRegular,
   LaptopCode,
   Database,
 } from "@vicons/fa";
@@ -78,7 +79,7 @@ import siteLinks from "@/assets/siteLinks.json";
 // 记录失败的图片地址，回退到原图标或项目首字，避免反复加载失败地址。
 const failedImages = reactive(new Set());
 const store = mainStore();
-const siteIcon = { Blog, Cloud, CompactDisc, Compass, Book, Fire, LaptopCode, Database };
+const siteIcon = { Blog, Cloud, CompactDisc, Compass, Book, Fire, LaptopCode, Database, KeyboardRegular };
 
 /** 保留旧图标名称，优先使用 image，icon 也支持直接配置图片地址。 */
 const getImage = (item) => item.image || (siteIcon[item.icon] ? "" : item.icon) || "";
